@@ -17,15 +17,14 @@ import os, uuid, time, base64, json, re, pickle, logging
 from pathlib import Path
 from typing import List, Optional, Dict, Tuple
 from collections import defaultdict
-import os
 
-# _env = Path(__file__).parent / ".env"
-# if _env.exists():
-#     for _l in _env.read_text().splitlines():
-#         _l = _l.strip()
-#         if _l and not _l.startswith("#") and "=" in _l:
-#             _k, _v = _l.split("=", 1)
-#             os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
+_env = Path(__file__).parent / ".env"
+if _env.exists():
+    for _l in _env.read_text().splitlines():
+        _l = _l.strip()
+        if _l and not _l.startswith("#") and "=" in _l:
+            _k, _v = _l.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 logger = logging.getLogger(__name__)
@@ -654,7 +653,7 @@ def call_llm(prompt: str) -> Optional[str]:
         r = rq.post(
             f"{base}/chat/completions",
             headers=hdrs,
-            timeout=None,
+            timeout=600,
             json={
                 "model":       mdl,
                 "messages":    [

@@ -417,7 +417,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.ui.utils.api_client import APIClient
 
 
-API_BASE_URL = "http://127.0.0.1:8000"
+API_BASE_URL = "http://localhost:8000"
 DOC_TYPES = ["auto", "policy", "procurement_policy", "gfr_rules", "audit_report", "tender_document"]
 
 st.set_page_config(page_title="INICAI Defence Chat", page_icon="🛡️", layout="wide")
