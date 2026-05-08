@@ -1,0 +1,35 @@
+# ── Core API ──────────────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-jose[cryptography]>=3.3.0
+
+# ── Streamlit UI ───────────────────────────────────────────────────────────────
+streamlit>=1.32.0
+requests>=2.31.0
+
+# ── RAG Pipeline ───────────────────────────────────────────────────────────────
+sentence-transformers>=2.7.0   # embedding model (downloads ~90MB on first run)
+faiss-cpu>=1.8.0               # vector search (use faiss-gpu if you have CUDA)
+numpy>=1.26.0
+rank-bm25>=0.2.2               # sparse keyword retrieval for hybrid search
+
+# ── Document Parsing ───────────────────────────────────────────────────────────
+pymupdf>=1.24.0                # PDF parsing (pip name: pymupdf, import name: fitz)
+python-docx>=1.1.0             # DOCX parsing
+
+# Optional production swaps:
+# llama-index>=0.12.0           # document-heavy RAG orchestration
+# langchain>=0.3.0              # chains, tools, and agent workflows
+# qdrant-client>=1.12.0         # free/self-hosted vector DB
+# pinecone>=5.0.0               # managed production vector DB
+# weaviate-client>=4.8.0        # managed/self-hosted hybrid search
+# pgvector>=0.3.0               # PostgreSQL vector extension client helpers
+# unstructured[pdf]>=0.16.0     # advanced document partitioning
+
+# ── Optional: LLM backends ────────────────────────────────────────────────────
+# For Ollama (local LLM):   no extra packages needed — just install Ollama app
+# For OpenAI:               pip install openai
+# openai>=1.12.0

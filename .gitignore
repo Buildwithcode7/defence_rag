@@ -1,0 +1,9 @@
+﻿data/
+src/data/
+*.index
+*.pkl
+*.pdf
+__pycache__/
+*.pyc
+.env
+venv/

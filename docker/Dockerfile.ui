@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir streamlit requests
+
+COPY src/ui/ ./src/ui/
+COPY src/config.py ./src/
+
+RUN useradd -m -u 1000 inicai && chown -R inicai:inicai /app
+USER inicai
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "src/ui/app.py", \
+     "--server.port=8501", \
+     "--server.address=0.0.0.0", \
+     "--server.headless=true", \
+     "--browser.gatherUsageStats=false"]

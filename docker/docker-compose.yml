@@ -1,0 +1,76 @@
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------------------------
+  # FastAPI backend
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: inicai_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_BACKEND=mock
+      - REDIS_URL=redis://redis:6379
+      - AUDIT_DB_PATH=/app/data/audit/audit_trail.db
+      - FAISS_INDEX_PATH=/app/data/indices/faiss_ivfpq.index
+      - BM25_INDEX_PATH=/app/data/indices/bm25_corpus.pkl
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-CHANGE_IN_PRODUCTION}
+      - ALLOWED_ORIGINS=http://localhost:8501
+      - ENABLE_DOCS=true
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./config:/app/config
+    depends_on:
+      - redis
+    networks:
+      - inicai_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ---------------------------------------------------------------------------
+  # Streamlit frontend
+  # ---------------------------------------------------------------------------
+  ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ui
+    container_name: inicai_ui
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      - API_BASE_URL=http://api:8000
+    depends_on:
+      - api
+    networks:
+      - inicai_net
+
+  # ---------------------------------------------------------------------------
+  # Redis — task queue + embedding cache
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: inicai_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - inicai_net
+
+volumes:
+  redis_data:
+
+networks:
+  inicai_net:
+    driver: bridge
